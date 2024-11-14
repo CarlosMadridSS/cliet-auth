@@ -2,6 +2,22 @@
   - Node.js (v20.18.0 LTS)
     - npm (v10.9.0 ou superior)
 
+# Primeiro Uso
+
+  Na pasta do projeto, instale as dependências do projeto com:
+
+    npm install
+
+# Rodando a Aplicação
+
+  Modo Desenvolvimento:
+
+    npm run dev
+
+  Modo Produção
+
+    npm run start
+
 # Endpoints
 
   ## Login (method POST)
