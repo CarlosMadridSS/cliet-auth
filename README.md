@@ -6,7 +6,7 @@
 
   Endpoints
 
-  # Login (method POST)
+  ## Login (method POST)
 
     http://localhost:3031/login
 
@@ -18,22 +18,21 @@
     }
 
   Outputs
-    - {message: "Já há um usuário autenticado!"}
-    - {message: "Usuário não encontrado"}
-    - {message: "Senha inexistente"}
-    - {message: "Senha incorreta"}
+  - {message: "Já há um usuário autenticado!"}
+  - {message: "Usuário não encontrado"}
+  - {message: "Senha inexistente"}
+  - {message: "Senha incorreta"}
 
-  # Is Authenticated (method GET)
+  ## Is Authenticated (method GET)
   
       http://localhost:3031/is-authenticated
       
   Outputs
-    - {message: "Usuário autenticado"}
-    - {message: "Nenhum usuário autenticado."}
+  - {message: "Usuário autenticado"}
+  - {message: "Nenhum usuário autenticado."}
 
 
-
-  #Logout
+  ##Logout
     
     http://localhost:3031/logout
 
