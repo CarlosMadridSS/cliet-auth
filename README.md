@@ -2,9 +2,7 @@
   - Node.js (v20.18.0 LTS)
     - npm (v10.9.0 ou superior)
 
-# Modo de Uso
-
-  Endpoints
+# Endpoints
 
   ## Login (method POST)
 
@@ -37,6 +35,6 @@
     http://localhost:3031/logout
 
   Outputs
-    - {message: "Logout efetuado com sucesso!"}
-    - {message: "Nenhum usuário autenticado para efetuar logout."}
+  - {message: "Logout efetuado com sucesso!"}
+  - {message: "Nenhum usuário autenticado para efetuar logout."}
 
