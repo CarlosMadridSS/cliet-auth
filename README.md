@@ -30,7 +30,7 @@
   - {message: "Nenhum usuário autenticado."}
 
 
-  ## Logout
+  ## Logout (method GET)
     
     http://localhost:3031/logout
 
