@@ -1,10 +1,17 @@
 import bcrypt from 'bcryptjs'
 import axios from 'axios'
+import hasResultsInTable from './dal/hasResultsInTable.js'
+import removeSessionUser from './dal/removeSessionUser.js'
+import insertSessionUser from './dal/insertSessionUser.js'
+
 
 export const returnUrl = () => {
+
+    const ApiPort = process.env.EXT_API_PORT.length > 0 ? `:${process.env.EXT_API_PORT}` : ''
+
     const url = {
         protocol: process.env.API_PROTOCOL,
-        hostname: `${process.env.API_HOSTNAME}:${process.env.EXT_API_PORT}`,
+        hostname: `${process.env.API_HOSTNAME}${ApiPort}`,
         pathname: process.env.API_AUTH_PATHNAME,
         pass_api: process.env.PASS_API
     }
@@ -26,19 +33,17 @@ export const request = async () => {
 export const login = async (req, res) => {
     try {
 
-        const authCookie = req.cookies.authTokenSCST;
-
-        if (authCookie) throw new Error('Já há um usuário autenticado!')
-
         const { register, password } = req.body
+
+        const resultHasResultsInTable = hasResultsInTable(register)
+
+        if (resultHasResultsInTable) await removeSessionUser(register)
 
         const users = await request()
 
         if (users) {
 
             const user = users.some(item => item.matricula === Number(register)) ? users.find(item => item.matricula === Number(register)) : {}
-
-            console.log(typeof user)
 
             if (user && Object.keys(user).length == 0) throw new Error('Usuário não encontrado')
 
@@ -48,9 +53,11 @@ export const login = async (req, res) => {
 
             if (!validPass) throw new Error('Senha incorreta')
 
-            res.cookie('authTokenSCST', user.matricula, { maxAge: 900000, httpOnly: true });
+            insertSessionUser(register)
 
-            res.redirect('/is-authenticated')
+            setTimeout(() => {
+                res.redirect(`/is-authenticated/${register}/${process.env.PASS_API}`)
+            }, 400)
 
         }
 
@@ -60,30 +67,22 @@ export const login = async (req, res) => {
     }
 }
 
-export const logout = (req, res) => {
+export const logout = async (req, res, register) => {
 
-    const cookie = 'authTokenSCST'
+    const resultRemoveSessionUser = await removeSessionUser(register)
 
-    const authCookie = req.cookies[cookie];
-
-    if (authCookie) {
-        res.clearCookie(cookie);
-        res.json({ message: 'Logout efetuado com sucesso!' });
-    } else {
-        res.json({
-            message: 'Nenhum usuário autenticado para efetuar logout.'
-        })
-    }
+    if (resultRemoveSessionUser) res.json({ message: 'Logout efetuado com sucesso!' })
+    else res.json({ message: 'Nenhum usuário autenticado para efetuar logout.' })
 };
 
-export const isAuthenticated = (req, res) => {
+export const isAuthenticated = async (req, res, register) => {
 
-    const authCookie = req.cookies.authTokenSCST;
+    const resultHasResultsInTable = await hasResultsInTable(register)
 
-    if (authCookie) {
+    if (resultHasResultsInTable) {
         res.json({
             message: 'Usuário autenticado.',
-            matricula: authCookie
+            matricula: register
         })
     } else {
         res.json({
